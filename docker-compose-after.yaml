@@ -5,7 +5,7 @@ services:
     image: public.ecr.aws/gravitational/teleport:10.2.1
     container_name: teleport
     entrypoint: /bin/sh
-    hostname: teleport.centagate.com
+    hostname: <domain or ip>
     command: -c "sleep 1 && /bin/dumb-init teleport start -c /etc/teleport/teleport.yaml"
     ports:
       - "3023:3023"
