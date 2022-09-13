@@ -1,0 +1,27 @@
+version: '3'
+services:
+  configure:
+    image: public.ecr.aws/gravitational/teleport:10.2.1
+    container_name: teleport-configure
+    entrypoint: /bin/sh
+    hostname: <domain or ip>
+    command: -c "if [ ! -f /etc/teleport/teleport.yaml ]; then teleport configure > /etc/teleport/teleport.yaml; fi"
+    volumes:
+      - ./config:/etc/teleport
+
+  teleport:
+    image: public.ecr.aws/gravitational/teleport:10.2.1
+    container_name: teleport
+    entrypoint: /bin/sh
+    hostname: <domain or ip>
+    command: -c "sleep 1 && /bin/dumb-init teleport start -c /etc/teleport/teleport.yaml"
+    ports:
+      - "3023:3023"
+      - "3024:3024"
+      - "3025:3025"
+      - "3080:3080"
+    volumes:
+      - ./config:/etc/teleport
+      - ./data:/var/lib/teleport
+    depends_on:
+      - configure
